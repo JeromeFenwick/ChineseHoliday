@@ -34,7 +34,8 @@ def generate_ics_event(holiday: Holiday) -> str:
     event_type = "补班" if holiday.is_workday else "假期"
     summary = f"{holiday.name} ({event_type})"
     
-    # ICS 格式要求 DTEND 是结束日期的下一天
+    # ICS 格式标准(RFC 5545)要求：全天事件的 DTEND 必须是结束日期的下一天
+    # 例如：1月1-3日的假期，DTSTART=20260101，DTEND=20260104
     end_date_next = holiday.end_date + timedelta(days=1)
     
     event = f"""BEGIN:VEVENT
