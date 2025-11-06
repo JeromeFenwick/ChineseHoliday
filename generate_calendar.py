@@ -5,7 +5,7 @@
 生成 iCalendar (.ics) 格式的日历文件
 """
 
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from typing import List, Dict, Optional
 import uuid
 
@@ -34,11 +34,14 @@ def generate_ics_event(holiday: Holiday) -> str:
     event_type = "补班" if holiday.is_workday else "假期"
     summary = f"{holiday.name} ({event_type})"
     
+    # ICS 格式要求 DTEND 是结束日期的下一天
+    end_date_next = holiday.end_date + timedelta(days=1)
+    
     event = f"""BEGIN:VEVENT
 UID:{uid}@chinese-holiday
 DTSTAMP:{now}
 DTSTART;VALUE=DATE:{format_date(holiday.start_date)}
-DTEND;VALUE=DATE:{format_date(holiday.end_date)}
+DTEND;VALUE=DATE:{format_date(end_date_next)}
 SUMMARY:{summary}
 DESCRIPTION:{holiday.description}
 STATUS:CONFIRMED
